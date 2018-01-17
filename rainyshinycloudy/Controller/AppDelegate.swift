@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  rainyshinycloudy
 //
-//  Created by Melissa Bain on 11/17/17.
+//  Created by Melissa Bain on 11/17/17. Updated 1/17/18.
 //  Copyright © 2017 MB Consulting. All rights reserved.
 //
 
@@ -32,6 +32,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+        
+        WeatherVC().setupLocationManager()
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {

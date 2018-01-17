@@ -40,11 +40,11 @@ class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegat
         currentWeather = CurrentWeather()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        setupLocationManager()
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        
+//        setupLocationManager()
+//    }
     
     func setupLocationManager() {
         
@@ -52,6 +52,8 @@ class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegat
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
+        
+        print("The current time is: \(Date())")
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
