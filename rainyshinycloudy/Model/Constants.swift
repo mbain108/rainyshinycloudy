@@ -10,6 +10,6 @@ import Foundation
 
 let API_KEY = "eb17640a1529cef128eb80c58f10fbdf"
 let CURRENT_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather"
-let FORECAST_URL = "http://api.openweathermap.org/data/2.5/forecast/daily"
+let FORECAST_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?cnt=16"
 
 typealias DownloadComplete = () -> ()

@@ -11,7 +11,7 @@ import CoreLocation
 import Alamofire
 import SwiftyJSON
 
-class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
+class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource, ChangeCityDelegate {
     
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var currentWeatherImage: UIImageView!
@@ -30,6 +30,7 @@ class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegat
     var forecasts = [Forecast]()
 
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         
         setupLocationManager()
@@ -40,20 +41,17 @@ class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegat
         currentWeather = CurrentWeather()
     }
     
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//        
-//        setupLocationManager()
-//    }
+    override func viewWillAppear(_ animated: Bool) {
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.setupLocationManager), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+    }
     
-    func setupLocationManager() {
+    @objc func setupLocationManager() {
         
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestAlwaysAuthorization()
+        locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
-        
-        print("The current time is: \(Date())")
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -68,10 +66,8 @@ class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegat
             
             currentWeather.downloadWeatherDetails(url: CURRENT_WEATHER_URL, parameters: params) {
 
-                // self.downloadForecastData {
                 self.getForecastData(url: FORECAST_URL, parameters: params)
                 self.updateUIWithWeatherData()
-                // }
             }
         } else {
             locationLabel.text = "Need Authorization"
@@ -120,7 +116,6 @@ class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegat
     func UTCToLocal(unixTimeStamp: Double) -> String {
 
         let date = Date(timeIntervalSince1970: unixTimeStamp)
-
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone.current
         dateFormatter.locale = NSLocale.current
@@ -135,7 +130,6 @@ class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegat
         currentTempLabel.text = "\(currentWeather.temperature)° F"
         minMaxTempLabel.text = "h: \(currentWeather.maximumTemperature)°   l: \(currentWeather.minimumTemperature)° F"
         sunriseSunsetLabel.text = "↑ \(UTCToLocal(unixTimeStamp: currentWeather.sunriseTime))   ↓ \(UTCToLocal(unixTimeStamp: currentWeather.sunsetTime))"
-
 
         currentWeatherImage.image = UIImage(named: currentWeather.weatherIconName)
         currentWeatherTypeLabel.text = "\(currentWeather.description)"
@@ -169,5 +163,26 @@ class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegat
     override var preferredStatusBarStyle: UIStatusBarStyle {
     
         return .lightContent
+    }
+    
+    func userEnteredANewCityName(city: String) {
+        
+        let params: [String: String] = ["q": city, "appid": API_KEY]
+        
+        currentWeather.downloadWeatherDetails(url: CURRENT_WEATHER_URL, parameters: params) {
+            
+            self.getForecastData(url: FORECAST_URL, parameters: params)
+            self.updateUIWithWeatherData()
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "changeCityName" {
+            
+            let destinationVC = segue.destination as! ChangeCityVC
+            
+            destinationVC.delegate = self
+        }
     }
 }

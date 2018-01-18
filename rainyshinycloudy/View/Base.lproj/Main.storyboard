@@ -105,6 +105,8 @@
                                                         </subviews>
                                                         <constraints>
                                                             <constraint firstItem="0gl-1a-lob" firstAttribute="top" secondItem="MJ0-uu-c7B" secondAttribute="bottom" id="HA4-lj-SgQ"/>
+                                                            <constraint firstItem="0gl-1a-lob" firstAttribute="centerX" secondItem="rOV-Fw-r4E" secondAttribute="centerX" id="btm-PB-wi8"/>
+                                                            <constraint firstItem="MJ0-uu-c7B" firstAttribute="centerX" secondItem="rOV-Fw-r4E" secondAttribute="centerX" id="jwL-G8-cG7"/>
                                                             <constraint firstItem="MJ0-uu-c7B" firstAttribute="top" secondItem="u6y-1x-oSw" secondAttribute="bottom" id="xM4-YN-1uJ"/>
                                                         </constraints>
                                                     </stackView>
@@ -118,12 +120,25 @@
                                             </stackView>
                                         </subviews>
                                     </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hoi-Ul-2CD">
+                                        <rect key="frame" x="320" y="45" width="40" height="25"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="25" id="kMQ-mW-o6y"/>
+                                            <constraint firstAttribute="width" constant="40" id="tKL-SW-QAj"/>
+                                        </constraints>
+                                        <state key="normal" image="MenuIcon"/>
+                                        <connections>
+                                            <segue destination="uEb-Ip-7bp" kind="show" identifier="changeCityName" id="Cbf-bG-Sxe"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.34475010633468628" green="0.083234585821628571" blue="0.30120348930358887" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
+                                    <constraint firstItem="Hoi-Ul-2CD" firstAttribute="top" secondItem="kMU-Jx-qjX" secondAttribute="top" constant="45" id="6eN-Vj-oCI"/>
                                     <constraint firstItem="kCI-ad-8N0" firstAttribute="centerX" secondItem="kMU-Jx-qjX" secondAttribute="centerX" id="GXt-rx-FRB"/>
                                     <constraint firstItem="kCI-ad-8N0" firstAttribute="top" secondItem="kMU-Jx-qjX" secondAttribute="top" constant="50" id="Giu-Fl-Cn0"/>
                                     <constraint firstAttribute="height" constant="500" id="PSL-56-4EA"/>
+                                    <constraint firstAttribute="trailing" secondItem="Hoi-Ul-2CD" secondAttribute="trailing" constant="15" id="xWI-Ka-G2U"/>
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="80" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="OJt-av-gp0">
@@ -232,5 +247,54 @@
             </objects>
             <point key="canvasLocation" x="-572" y="100"/>
         </scene>
+        <!--Change CityVC-->
+        <scene sceneID="skC-yt-Dfd">
+            <objects>
+                <viewController id="uEb-Ip-7bp" customClass="ChangeCityVC" customModule="rainyshinycloudy" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="dz5-OG-Hg8"/>
+                        <viewControllerLayoutGuide type="bottom" id="fyf-ju-kWj"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="BtE-0S-vRv">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AZs-J2-OPM">
+                                <rect key="frame" x="22" y="20" width="34" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="back"/>
+                                <connections>
+                                    <action selector="backButtonPressed:" destination="uEb-Ip-7bp" eventType="touchUpInside" id="q1w-zL-Pqd"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mRw-Fo-VIS">
+                                <rect key="frame" x="146" y="318" width="82" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="get weather"/>
+                                <connections>
+                                    <action selector="getWeatherPressed:" destination="uEb-Ip-7bp" eventType="touchUpInside" id="48c-Rz-ONv"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter City Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kfk-6D-2zB">
+                                <rect key="frame" x="123" y="272" width="128" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <connections>
+                        <outlet property="changeCityTextField" destination="kfk-6D-2zB" id="cr2-Xk-KlP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="URd-RQ-SFJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="248.80000000000001" y="99.400299850074973"/>
+        </scene>
     </scenes>
+    <resources>
+        <image name="MenuIcon" width="54" height="34"/>
+    </resources>
 </document>
