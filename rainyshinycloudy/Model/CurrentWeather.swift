@@ -2,7 +2,7 @@
 //  CurrentWeather.swift
 //  rainyshinycloudy
 //
-//  Created by Melissa Bain on 11/25/17.
+//  Created by Melissa Bain on 11/25/17. Updated 1/18/18.
 //  Copyright © 2017 MB Consulting. All rights reserved.
 //
 
