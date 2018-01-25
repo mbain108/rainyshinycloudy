@@ -66,49 +66,46 @@ class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegat
             
             currentWeather.downloadWeatherDetails(url: CURRENT_WEATHER_URL, parameters: params) {
 
-                self.getForecastData(url: FORECAST_URL, parameters: params)
-                self.updateUIWithWeatherData()
+                self.getForecastData(url: FORECAST_URL, parameters: params) {
+                    self.updateUIWithWeatherData()
+                }
             }
         } else {
-            locationLabel.text = "Need Authorization"
+            let latitude = "37.3230"
+            let longitude = "-122.0322"
+            let params: [String: String] = ["lat": latitude, "lon": longitude, "appid": API_KEY]
             
-            if CLLocationManager.authorizationStatus() == .denied {
+            currentWeather.downloadWeatherDetails(url: CURRENT_WEATHER_URL, parameters: params) {
                 
-                let alert = UIAlertController(title: "Need Authorization", message: "This app is unusable if you don't authorize this app to use your location.", preferredStyle: .alert)
-                
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-                
-                alert.addAction(UIAlertAction(title: "Settings", style: .default, handler: { _ in
-                    let url = URL(string: UIApplicationOpenSettingsURLString)!
-                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                }))
-                
-                self.present(alert, animated: true, completion: nil)
+                self.getForecastData(url: FORECAST_URL, parameters: params) {
+                    self.updateUIWithWeatherData()
+                }
             }
         }
     }
     
-    func getForecastData(url: String, parameters: [String: String]) {
+    func getForecastData(url: String, parameters: [String: String], completed: @escaping DownloadComplete) {
 
         Alamofire.request(url, method: .get, parameters: parameters).responseJSON {
             response in
 
             if response.result.isSuccess {
 
+                self.forecasts.removeAll()
+                
                 if let dict = response.result.value as? Dictionary<String, AnyObject> {
 
                     if let list = dict["list"] as? [Dictionary<String, AnyObject>] {
 
                         for element in list {
-
                             let forecast = Forecast(weatherDict: element)
                             self.forecasts.append(forecast)
                         }
 
-                        self.forecasts.remove(at: 0)
                         self.tableView.reloadData()
                     }
                 }
+                completed()
             }
         }
     }
@@ -167,12 +164,13 @@ class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegat
     
     func userEnteredANewCityName(city: String) {
         
-        let params: [String: String] = ["q": city, "appid": API_KEY]
+        let newParams: [String: String] = ["q": city, "appid": API_KEY]
         
-        currentWeather.downloadWeatherDetails(url: CURRENT_WEATHER_URL, parameters: params) {
+        currentWeather.downloadWeatherDetails(url: CURRENT_WEATHER_URL, parameters: newParams) {
             
-            self.getForecastData(url: FORECAST_URL, parameters: params)
-            self.updateUIWithWeatherData()
+            self.getForecastData(url: FORECAST_URL, parameters: newParams) {
+                self.updateUIWithWeatherData()
+            }
         }
     }
     

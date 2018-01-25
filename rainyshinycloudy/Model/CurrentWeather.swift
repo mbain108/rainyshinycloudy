@@ -169,7 +169,7 @@ class CurrentWeather {
             case 600...622:
                 return "Snow"
             case 701...781:
-                return "Atmosphere"
+                return "Haze"
             case 800:
                 return "Clear"
             case 801...804:
