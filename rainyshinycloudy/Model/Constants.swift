@@ -12,6 +12,4 @@ let API_KEY = "eb17640a1529cef128eb80c58f10fbdf"
 let CURRENT_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather"
 let FORECAST_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?cnt=8"
 
-// http://api.openweathermap.org/data/2.5/forecast/daily?q=Godfrey&APPID=eb17640a1529cef128eb80c58f10fbdf
-
 typealias DownloadComplete = () -> ()

@@ -2,7 +2,7 @@
 //  WeatherVC.swift
 //  rainyshinycloudy
 //
-//  Created by Melissa Bain on 11/17/17. Updated 1/18/18.
+//  Created by Melissa Bain on 11/17/17. Updated 1/26/18.
 //  Copyright © 2017 MB Consulting. All rights reserved.
 //
 
@@ -33,53 +33,67 @@ class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegat
         
         super.viewDidLoad()
         
-        setupLocationManager()
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        currentWeather = CurrentWeather()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.setupLocationManager), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
-    }
-    
-    @objc func setupLocationManager() {
-        
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
+        locationManager.startMonitoringSignificantLocationChanges()
         locationManager.startUpdatingLocation()
+        
+        tableView.delegate = self
+        tableView.dataSource = self
     }
     
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+    override func viewDidAppear(_ animated: Bool) {
+
+        super.viewDidAppear(animated)
+
+        locationAuthStatus()
+    }
+    
+    func locationAuthStatus() {
         
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse || CLLocationManager.authorizationStatus() == .authorizedAlways {
-        
-            currentLocation = locationManager.location
             
-            let latitude = String(currentLocation.coordinate.latitude)
-            let longitude = String(currentLocation.coordinate.longitude)
-            let params: [String: String] = ["lat": latitude, "lon": longitude, "appid": API_KEY]
-            
-            currentWeather.downloadWeatherDetails(url: CURRENT_WEATHER_URL, parameters: params) {
-
-                self.getForecastData(url: FORECAST_URL, parameters: params) {
-                    self.updateUIWithWeatherData()
-                }
-            }
+            locationManager.requestLocation()
         } else {
-            let latitude = "37.3230"
-            let longitude = "-122.0322"
-            let params: [String: String] = ["lat": latitude, "lon": longitude, "appid": API_KEY]
             
-            currentWeather.downloadWeatherDetails(url: CURRENT_WEATHER_URL, parameters: params) {
-                
-                self.getForecastData(url: FORECAST_URL, parameters: params) {
-                    self.updateUIWithWeatherData()
-                }
+            locationManager.requestWhenInUseAuthorization()
+            locationAuthStatus()
+        }
+        
+    }
+    
+      func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        let userLocation:CLLocation = locations[0] as CLLocation
+        
+        Location.sharedInstance.latitude = userLocation.coordinate.latitude
+        Location.sharedInstance.longitude = userLocation.coordinate.longitude
+        
+        let params: [String: String] = ["lat": String(Location.sharedInstance.latitude), "lon": String(Location.sharedInstance.longitude), "appid": API_KEY]
+        
+        currentWeather = CurrentWeather()
+        
+        currentWeather.downloadWeatherDetails(url: CURRENT_WEATHER_URL, parameters: params) {
+
+            self.getForecastData(url: FORECAST_URL, parameters: params) {
+                self.updateUIWithWeatherData()
+            }
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        Location.sharedInstance.latitude = 37.3230
+        Location.sharedInstance.longitude = -122.0322
+        
+        let params: [String: String] = ["lat": String(Location.sharedInstance.latitude), "lon": String(Location.sharedInstance.longitude), "appid": API_KEY]
+        
+        currentWeather = CurrentWeather()
+        
+        currentWeather.downloadWeatherDetails(url: CURRENT_WEATHER_URL, parameters: params) {
+            
+            self.getForecastData(url: FORECAST_URL, parameters: params) {
+                self.updateUIWithWeatherData()
             }
         }
     }
@@ -130,7 +144,7 @@ class WeatherVC: UIViewController, CLLocationManagerDelegate, UITableViewDelegat
 
         currentWeatherImage.image = UIImage(named: currentWeather.weatherIconName)
         currentWeatherTypeLabel.text = "\(currentWeather.description)"
-        dateLabel.text = "\(currentWeather.date)"
+        self.dateLabel.text = "\(currentWeather.date)"
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
